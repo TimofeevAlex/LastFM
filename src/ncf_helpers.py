@@ -24,16 +24,24 @@ def create_test_step(model, loss_fn, test_loss_avg, test_rmse):
     return test_step
 
 def create_inference(model):
-    @tf.function
+    @tf.function(experimental_relax_shapes=True)
     def inference(x):
         logits = model(x, training=False)
         return logits
     return inference
 
-def get_ratings(pred_func, test_dataset, users_demo):
-    ratings = np.array([])
-    for batch in test_dataset:
-        user_feats = users_demo.loc[batch[:, 0]]
-        artist_id = batch[:, 1]
-        ratings = np.append(ratings, pred_func([user_feats, artist_id]))
+# def get_ratings(pred_func, test_dataset, users_demo):
+#     ratings = np.array([])
+#     for batch in test_dataset:
+#         user_feats = users_demo.loc[batch[:, 0]]
+#         artist_id = batch[:, 1]
+#         ratings = np.append(ratings, pred_func([user_feats, artist_id]))
+#     return ratings
+
+def get_ratings(pred_func, train, users_demo, artists):
+    ratings = pd.DataFrame(columns=['user_email', 'artist_id', 'pred_plays'])
+    for user, user_df in tqdm(train.groupby('user_email')):
+        new_artists = np.array(list(set(artists) - set(user_df['artist_id'])))
+        user_feats = users_demo.loc[[user]*new_artists.shape[0]]
+        ratings = ratings.append({'user_email': user, 'artist_id': artist, 'pred_plays': pred_func([user_feats, new_artists])}) 
     return ratings
