@@ -33,3 +33,22 @@ def create_ncf_model(num_factors, num_user_features, num_artists):
     # Model definition
     model = tf.keras.models.Model(inputs=[user_feats, artist_id], outputs=[dense_6_output], name='deep_factor_model')
     return model
+
+def create_shallow_model(num_factors, num_users, num_artists):
+    # users
+    user_email = tf.keras.layers.Input(shape = [1], name = 'user_email')
+    user_matrix = tf.keras.layers.Embedding(num_users+1, num_factors, name = 'user_matrix')(user_email)
+    user_vector = tf.keras.layers.Flatten(name = 'user_vector')(user_matrix)
+    
+    # artists
+    artist_id = tf.keras.layers.Input(shape = [1], name = 'artist_id')
+    artist_matrix = tf.keras.layers.Embedding(num_artists+1, num_factors, name = 'artist_matrix')(artist_id)
+    artist_vector = tf.keras.layers.Flatten(name = 'artist_vector')(artist_matrix)
+    
+    # dot product
+    vector_product = tf.keras.layers.dot([user_vector, artist_vector], axes = 1, normalize = False)
+    
+    # model
+    model = tf.keras.models.Model(inputs = [user_email, artist_id], outputs = [vector_product], name = 'shallow_model')
+    
+    return model
