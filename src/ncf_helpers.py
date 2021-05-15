@@ -1,4 +1,7 @@
+import numpy as np
+# import pandas as pd
 import tensorflow as tf
+from tqdm import tqdm
 
 def create_train_step(model, loss_fn, epoch_loss_avg, epoch_rmse):
     @tf.function
@@ -30,18 +33,11 @@ def create_inference(model):
         return logits
     return inference
 
-# def get_ratings(pred_func, test_dataset, users_demo):
-#     ratings = np.array([])
-#     for batch in test_dataset:
-#         user_feats = users_demo.loc[batch[:, 0]]
-#         artist_id = batch[:, 1]
-#         ratings = np.append(ratings, pred_func([user_feats, artist_id]))
-#     return ratings
-
 def get_ratings(pred_func, train, users_demo, artists):
-    ratings = pd.DataFrame(columns=['user_email', 'artist_id', 'pred_plays'])
+    ratings = {}
+    set_artists = set(artists)
     for user, user_df in tqdm(train.groupby('user_email')):
-        new_artists = np.array(list(set(artists) - set(user_df['artist_id'])))
+        new_artists = np.array(list(set_artists - set(user_df['artist_id'])))
         user_feats = users_demo.loc[[user]*new_artists.shape[0]]
-        ratings = ratings.append({'user_email': user, 'artist_id': artist, 'pred_plays': pred_func([user_feats, new_artists])}) 
+        ratings[user] = np.stack([new_artists, pred_func([user_feats, new_artists]).numpy().squeeze()])
     return ratings
