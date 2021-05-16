@@ -3,10 +3,10 @@ from tensorflow import keras
 from tensorflow.keras.regularizers import l2
 
 #probably a branch that takes 
-def create_ncf_model(num_factors, num_user_features, num_artists):
+def create_ncf_model(num_factors, num_user_features, num_artists, num_users):
     # User branch - IDs
     user_id = tf.keras.layers.Input(shape=[1], name='user_id')
-    user_matrix = tf.keras.layers.Embedding(num_artists+1, num_factors, name='user_matrix')(user_id)
+    user_matrix = tf.keras.layers.Embedding(num_users+1, num_factors, name='user_matrix')(user_id)
     user_vector = tf.keras.layers.Flatten(name='user_id_vector')(user_matrix)
     user_vector_proc = tf.keras.layers.Dense(num_factors, name='user_id_vector_proc', activation='selu', kernel_regularizer=l2())(user_vector)
     # User branch - features
