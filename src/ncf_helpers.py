@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 from tqdm import tqdm
 
-def create_train_step(model, loss_fn, epoch_loss_avg, epoch_rmse):
+def create_train_step(model, optimizer, loss_fn, epoch_loss_avg, epoch_rmse):
     @tf.function
     def train_step(x, y):
         with tf.GradientTape() as tape:
