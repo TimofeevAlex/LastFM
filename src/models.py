@@ -4,7 +4,12 @@ from tensorflow.keras.regularizers import l2
 
 #probably a branch that takes 
 def create_ncf_model(num_factors, num_user_features, num_artists):
-    # User branch
+    # User branch - IDs
+    user_id = tf.keras.layers.Input(shape=[1], name='user_id')
+    user_matrix = tf.keras.layers.Embedding(num_artists+1, num_factors, name='user_matrix')(user_id)
+    user_vector = tf.keras.layers.Flatten(name='user_id_vector')(user_matrix)
+    user_vector_proc = tf.keras.layers.Dense(num_factors, name='user_id_vector_proc', activation='selu', kernel_regularizer=l2())(user_vector)
+    # User branch - features
     user_feats = tf.keras.layers.Input(shape=[num_user_features], name='user_features')
     dense_1 = tf.keras.layers.Dense(3 * num_user_features // 4, name='fc1', activation='selu', kernel_regularizer=l2())(user_feats)
     dropout_1 = tf.keras.layers.Dropout(0.2, name='d1')(dense_1)
@@ -19,7 +24,7 @@ def create_ncf_model(num_factors, num_user_features, num_artists):
     artist_vector_proc = tf.keras.layers.Dense(num_factors, name='artist_vector_proc', activation='selu', kernel_regularizer=l2())(artist_vector)
     
     # Concantenation
-    vectors_concat = tf.keras.layers.Concatenate()([user_vector, artist_vector_proc]) #add
+    vectors_concat = tf.keras.layers.Concatenate()([user_vector_proc, user_vector, artist_vector_proc]) #add
     vectors_concat_dropout = tf.keras.layers.Dropout(0.2)(vectors_concat)
     
     # Backbone 
@@ -31,7 +36,7 @@ def create_ncf_model(num_factors, num_user_features, num_artists):
     dense_6_output = tf.keras.layers.Dense(1, activation='selu', name='output', kernel_regularizer=l2())(dense_5)
     
     # Model definition
-    model = tf.keras.models.Model(inputs=[user_feats, artist_id], outputs=[dense_6_output], name='deep_factor_model')
+    model = tf.keras.models.Model(inputs=[user_id, user_feats, artist_id], outputs=[dense_6_output], name='deep_factor_model')
     return model
 
 def create_shallow_model(num_factors, num_users, num_artists):
