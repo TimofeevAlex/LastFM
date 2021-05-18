@@ -47,3 +47,32 @@ def hit_rate_total(test, recs):
         total_hits += hit_rate_user(user, recs[user], test)
     
     return total_hits/test['user_email'].nunique()
+
+def arhr_user(user, top_recs, test):
+    '''
+    - top_recs: list of top reccommendations for the given user
+    '''
+    rank = 0
+    sum = 0
+    df_user = test.loc[test['user_email'] == user]
+    for artist in top_recs:
+      rank += 1
+      df_user_artist = df_user.loc[df_user['artist_id'] == artist]
+      
+      if((not df_user_artist.empty)):
+        if (df_user_artist.iloc[0]['log_plays'] > 0):
+          sum += 1.0/rank
+
+    return sum
+
+def arhr_total(test, recs):
+    '''
+    - recs: dict
+        Keys are users and values are lists of top reccommendations for the user
+    '''
+    users = test['user_email'].unique()
+    total_hit_rank = 0
+    for user in users:
+        total_hit_rank += arhr_user(user, recs[user], test)
+    
+    return total_hit_rank/test['user_email'].nunique()
