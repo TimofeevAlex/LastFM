@@ -149,3 +149,5 @@ def compute_metrics(test, test_users:list, pred_ratings:dict, k:int):
     print("Hit rate:", hit_rate)
     print('Arhr:', arhr)
     
+    return precisions, recalls, ndcg_arr, hit_rate, arhr
+    
