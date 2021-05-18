@@ -5,8 +5,13 @@ from tqdm.auto import tqdm
 
 def precision_recall_at_k(test, pred_ratings, k=10):
     '''
+    Compute precision and recall metrics.
+    
+    Parameters:
+    - test: test data extracted from lastfm_360_behav.
     - pred_ratings: dict
         Keys are users and values are arrays of shape (2, number of items)
+    - k: Top k artists to keep when making a prediction.
     '''
     precisions = []
     recalls = []
@@ -22,6 +27,10 @@ def precision_recall_at_k(test, pred_ratings, k=10):
 
 def hit_rate_total(test, recs):
     '''
+    Compute the hit rate metric.
+    
+    Parameters:
+    - test: test dataframe build from lastfm_360_behav.
     - recs: dict
         Keys are users and values are lists of top reccommendations for the user
     '''
@@ -39,6 +48,10 @@ def hit_rate_total(test, recs):
 
 def arhr_total(test, recs):
     '''
+    Compute the Average reciprocal hit ranking (arhr) metric.
+    
+    Parameters:
+    - test: test dataframe build from lastfm_360_behav.
     - recs: dict
         Keys are users and values are lists of top reccommendations for the user
     '''
@@ -56,8 +69,13 @@ def arhr_total(test, recs):
 
 def ndcg_at_k(test, pred_ratings, k=10):
     """
+    Compute the Normalized discounted cumulative gain (ndcg) metric. 
+    
+    Parameters:
+    - test: test dataframe build from lastfm_360_behav.
     - pred_ratings: dict
         Keys are users and values are arrays of shape (2, number of items)
+    - k: Top k artists to keep when making a prediction.
     """
     ndcg_arr = []
     for (user, user_test) in tqdm(test.groupby('user_email')):
@@ -75,4 +93,59 @@ def ndcg_at_k(test, pred_ratings, k=10):
         
         ndcg_arr.append(user_score)
     return ndcg_arr
+
+def top_k_artists(user_ratings, k: int):
+    """
+    Return a list of the top k artists given artist and score array.
+    
+    Parameters: 
+    - user_ratings: [list_of_artists, list_of_scores] (shape: (2, predicted_artists_number)) 
+    - k: Number of artists to keep
+    
+    Return: 
+    - array(string) array of k artists
+        """
+    return user_ratings[0, np.argsort(-user_ratings[1])].astype(np.int32)[:k]
+
+def compute_metrics(test, test_users:list, pred_ratings:dict, k:int):
+    """
+    Compute the following metrics given test dataset and predictions as input:
+    - Precision 
+    - Recall
+    - Normalized discounted cumulative gain (ndcg)
+    - Hit rate
+    - Average reciprocal hit ranking (arhr)
+    
+    Parameters:
+    - test: test dataframe build from lastfm_360_behav.
+    - test_users: list of users to test.
+    - pred_ratings: 
+        dictionary with:
+            - keys: users 
+            - values: [list_of_artists, list_of_predictions] (shape: (2, predicted_artists_number))
+    - k: Top k artists to keep.
+    """
+    test_small = test[test['user_email'].isin(test_users)]
+    
+    print("Computing precision & recall...")
+    precisions, recalls = precision_recall_at_k(test_small, pred_ratings, k=k)
+    
+    print("Computing normalized discounted cumulative gain...")
+    ndcg_arr = ndcg_at_k(test_small, pred_ratings, k=k)
+
+    # Get top k artists for each user
+    pred_top_artists = {u: top_k_artists(r, k) for (u, r) in pred_ratings.items()}
+    
+    print("Computing hit rate...")
+    hit_rate = hit_rate_total(test_small, pred_top_artists)
+    
+    print("Computing average reciprocal hit ranking...")
+    arhr = arhr_total(test_small, pred_top_artists)
+    
+    print("\nMetrics: \n")
+    print('Precision @ {}:'.format(k), np.mean(precisions))
+    print('Recall    @ {}:'.format(k), np.mean(recalls))
+    print('Ndcg @ {}:'.format(k), np.mean(ndcg_arr))
+    print("Hit rate:", hit_rate)
+    print('Arhr:', arhr)
     
