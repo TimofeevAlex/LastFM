@@ -1,0 +1,4 @@
+*.DS_Store
+*data.nosync
+*.ipynb_checkpoints
+*__pycache__*
