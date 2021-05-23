@@ -19,11 +19,11 @@ def create_train_step(model, optimizer, loss_fn, epoch_loss_avg, epoch_rmse):
 def create_test_step(model, loss_fn, test_loss_avg, test_rmse):
     @tf.function
     def test_step(x, y):
-        val_logits = model(x, training=False)
-        loss_value = loss_fn(y, val_logits)
+        logits = model(x, training=False)
+        loss_value = loss_fn(y, logits)
         test_loss_avg.update_state(loss_value)
-        test_rmse.update_state(y, val_logits)
-        return loss_value
+        test_rmse.update_state(y, logits)
+        return loss_value, logits
     return test_step
 
 def create_inference(model):

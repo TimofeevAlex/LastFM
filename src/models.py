@@ -37,11 +37,9 @@ def create_ncf_model(num_factors, num_user_features, num_artists, num_users, reg
     
     # Backbone 
     dense_1 = tf.keras.layers.Dense(2 * num_factors, name='fc1', activation='relu', kernel_regularizer=l2(reg))(vectors_concat)
-    dense_1_bn = tf.keras.layers.BatchNormalization()(dense_1)
-    dropout_1 = tf.keras.layers.Dropout(0.2, name='d1')(dense_1_bn)
+    dropout_1 = tf.keras.layers.Dropout(0.2, name='d1')(dense_1)
     dense_2 = tf.keras.layers.Dense(num_factors, name='fc2', activation='relu', kernel_regularizer=l2(reg))(dropout_1)
-    dense_2_bn = tf.keras.layers.BatchNormalization()(dense_2)
-    dropout_2 = tf.keras.layers.Dropout(0.2, name='d2')(dense_2_bn)
+    dropout_2 = tf.keras.layers.Dropout(0.2, name='d2')(dense_2)
     dense_3 = tf.keras.layers.Dense(num_factors // 2, name='fc3', activation='relu', kernel_regularizer=l2(reg))(dropout_2)
     dense_4 = tf.keras.layers.Dense(num_factors // 4, name='fc4', activation='relu', kernel_regularizer=l2(reg))(dense_3)
 
