@@ -37,7 +37,7 @@ def hit_rate_total(test, recs):
     total_hits = 0
     for (user, user_test) in tqdm(test.groupby('user_email')):
         # Get all artists for a given user
-        user_artists = user_test[user_test['log_plays'] > 0]['artist_id'].values
+        user_artists = user_test[user_test['rating'] > 0]['artist_id'].values
         # Compute the number of artists in both sets
         hit_rate_user = len(set(user_artists).intersection(set(recs[user])))
         
@@ -57,7 +57,7 @@ def arhr_total(test, recs):
     '''
     total_hit_rank = 0
     for (user, user_test) in tqdm(test.groupby('user_email')):
-        user_artists = user_test[user_test['log_plays'] > 0]['artist_id'].values
+        user_artists = user_test[user_test['rating'] > 0]['artist_id'].values
         # Compute the number of hits
         hits = set(user_artists).intersection(set(recs[user]))
         # Build map of ranks
@@ -86,7 +86,7 @@ def ndcg_at_k(test, pred_ratings, k=10):
         
         # Get top k artists true score
         artists_df = pd.DataFrame(ranked_artists, columns=['artist_id'], dtype=np.int64)
-        test_scores = artists_df.merge(user_test, on='artist_id', how='left', ).fillna(0)['log_plays'].values
+        test_scores = artists_df.merge(user_test, on='artist_id', how='left', ).fillna(0)['rating'].values
         
         # Compute ndcg score
         user_score = ndcg_score([test_scores], [ranked_scores])

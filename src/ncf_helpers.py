@@ -5,10 +5,10 @@ from tqdm import tqdm
 
 def create_train_step(model, optimizer, loss_fn, epoch_loss_avg, epoch_rmse):
     @tf.function
-    def train_step(x, y):
+    def train_step(x, y, weights):
         with tf.GradientTape() as tape:
             logits = model(x, training=True)
-            loss_value = loss_fn(y, logits)
+            loss_value = loss_fn(y, logits, weights)
         grads = tape.gradient(loss_value, model.trainable_weights)
         optimizer.apply_gradients(zip(grads, model.trainable_weights))
         epoch_loss_avg.update_state(loss_value)
