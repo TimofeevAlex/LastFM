@@ -8,7 +8,7 @@ def create_train_step(model, optimizer, loss_fn, epoch_loss_avg, epoch_rmse):
     def train_step(x, y, weights):
         with tf.GradientTape() as tape:
             logits = model(x, training=True)
-            loss_value = loss_fn(y, logits, weights)
+            loss_value = loss_fn(y, logits, sample_weight=weights)
         grads = tape.gradient(loss_value, model.trainable_weights)
         optimizer.apply_gradients(zip(grads, model.trainable_weights))
         epoch_loss_avg.update_state(loss_value)
