@@ -33,11 +33,11 @@ def create_inference(model):
         return logits
     return inference
 
-def get_ratings(pred_func, train, users_demo, artists):
-    ratings = {}
-    set_artists = set(artists)
-    for user, user_df in tqdm(train.groupby('user_email')):
-        new_artists = np.array(list(set_artists - set(user_df['artist_id'])))
-        user_feats = users_demo.loc[[user]*new_artists.shape[0]]
-        ratings[user] = np.stack([new_artists, pred_func([np.array([user]*new_artists.shape[0]), user_feats, new_artists]).numpy().squeeze()])
-    return ratings
+# def get_ratings(pred_func, train, users_demo, artists):
+#     ratings = {}
+#     set_artists = set(artists)
+#     for user, user_df in tqdm(train.groupby('user_email')):
+#         new_artists = np.array(list(set_artists - set(user_df['artist_id'])))
+#         user_feats = users_demo.loc[[user]*new_artists.shape[0]]
+#         ratings[user] = np.stack([new_artists, pred_func([np.array([user]*new_artists.shape[0]), user_feats, new_artists]).numpy().squeeze()])
+#     return ratings
