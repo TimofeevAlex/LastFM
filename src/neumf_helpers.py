@@ -33,7 +33,7 @@ def create_inference(model):
         return logits
     return inference
 
-def train_one_epoch(train_step, train_dataset, lastfm_360_demo, epoch_loss_avg, epoch_rmse, threshold, si=True):
+def train_one_epoch(train_step, train_dataset, lastfm_360_demo, epoch_loss_avg, epoch_rmse, threshold, si=True, only_si=False):
     epoch_loss_avg.reset_states()
     epoch_rmse.reset_states()
     for batch in train_dataset:
@@ -44,12 +44,15 @@ def train_one_epoch(train_step, train_dataset, lastfm_360_demo, epoch_loss_avg, 
         y = batch[:, 2]
         weights = tf.expand_dims(1. + 0.25*y, -1)##weights from another method, another strategy of uncertainty, SGD/Adam
         if si:
-            train_step([user_id, user_feats, artist_id], y >= threshold, weights) #user_feats, 
+            train_step([user_id, user_feats, artist_id], y >= threshold, weights) 
+        elif only_si:
+            train_step([user_feats, artist_id], y >= threshold, weights) 
         else:
             train_step([user_id, artist_id], y >= threshold, weights)
+        
     return epoch_loss_avg.result().numpy(), epoch_rmse.result().numpy()
 
-def validate_one_epoch(val_step, valid_dataset, lastfm_360_demo, val_loss_avg, val_rmse, threshold, si=True):
+def validate_one_epoch(val_step, valid_dataset, lastfm_360_demo, val_loss_avg, val_rmse, threshold, si=True, only_si=False):
     val_loss_avg.reset_states()
     val_rmse.reset_states()
     for batch in valid_dataset:
@@ -60,11 +63,13 @@ def validate_one_epoch(val_step, valid_dataset, lastfm_360_demo, val_loss_avg, v
         y = batch[:, 2]
         if si:
             val_step([user_id, user_feats, artist_id], y >= threshold) 
+        elif only_si:
+            val_step([user_feats, artist_id], y >= threshold) 
         else:
             val_step([user_id, artist_id], y >= threshold) 
     return val_loss_avg.result().numpy(), val_rmse.result().numpy()
 
-def test_one_epoch(test_step, test_dataset, lastfm_360_demo, test_loss_avg, test_rmse, threshold, si=True):
+def test_one_epoch(test_step, test_dataset, lastfm_360_demo, test_loss_avg, test_rmse, threshold, si=True, only_si=False):
     test_loss_avg.reset_states()
     test_rmse.reset_states()
     probs = np.array([])
@@ -76,6 +81,8 @@ def test_one_epoch(test_step, test_dataset, lastfm_360_demo, test_loss_avg, test
         y = batch[:, 2]
         if si:
             probs_batch = test_step([user_id, user_feats, artist_id], y >= threshold)
+        elif only_si:
+            probs_batch = test_step([user_feats, artist_id], y >= threshold)
         else:
             probs_batch = test_step([user_id, artist_id], y >= threshold)
         probs = np.append(probs, tf.squeeze(probs_batch).numpy())
