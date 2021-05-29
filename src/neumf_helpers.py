@@ -38,7 +38,7 @@ def train_one_epoch(train_step, train_dataset, lastfm_360_demo, epoch_loss_avg, 
     epoch_rmse.reset_states()
     for batch in train_dataset:
         user_id = batch[:, 0]
-        if si:
+        if si or only_si:
             user_feats = lastfm_360_demo.loc[user_id]
         artist_id = batch[:, 1]
         y = batch[:, 2]
@@ -57,7 +57,7 @@ def validate_one_epoch(val_step, valid_dataset, lastfm_360_demo, val_loss_avg, v
     val_rmse.reset_states()
     for batch in valid_dataset:
         user_id = batch[:, 0]
-        if si:
+        if si or only_si:
             user_feats = lastfm_360_demo.loc[user_id]
         artist_id = batch[:, 1]
         y = batch[:, 2]
@@ -75,7 +75,7 @@ def test_one_epoch(test_step, test_dataset, lastfm_360_demo, test_loss_avg, test
     probs = np.array([])
     for batch in test_dataset:
         user_id = batch[:, 0]
-        if si:
+        if si or only_si:
             user_feats = lastfm_360_demo.loc[user_id]
         artist_id = batch[:, 1]
         y = batch[:, 2]
