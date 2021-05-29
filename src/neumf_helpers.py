@@ -33,7 +33,7 @@ def create_inference(model):
         return logits
     return inference
 
-def train_one_epoch(train_step, train_dataset, lastfm_360_behav, epoch_loss_avg, epoch_rmse, threshold, si=True):
+def train_one_epoch(train_step, train_dataset, lastfm_360_demo, epoch_loss_avg, epoch_rmse, threshold, si=True):
     epoch_loss_avg.reset_states()
     epoch_rmse.reset_states()
     for batch in train_dataset:
