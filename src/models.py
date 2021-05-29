@@ -32,8 +32,8 @@ def create_shallow_model(num_factors, num_users, num_artists):
 def create_neumf_model(num_factors, num_artists, num_users, reg=0.01):
     # User IDs branch
     user_id = tf.keras.layers.Input(shape=[1], name='user_id')
-    user_matrix_1 = tf.keras.layers.Embedding(num_users+1, num_factors // 2, name='user_matrix_1', embeddings_regularizer=l2(reg))(user_id)
-    user_matrix_2 = tf.keras.layers.Embedding(num_users+1, num_factors // 2, name='user_matrix_2', embeddings_regularizer=l2(reg))(user_id)
+    user_matrix_1 = tf.keras.layers.Embedding(num_users+1, num_factors, name='user_matrix_1', embeddings_regularizer=l2(reg))(user_id)
+    user_matrix_2 = tf.keras.layers.Embedding(num_users+1, num_factors, name='user_matrix_2', embeddings_regularizer=l2(reg))(user_id)
     user_vector_proc_1 = tf.keras.layers.Flatten(name='user_id_vector_1')(user_matrix_1)
     user_vector_proc_2 = tf.keras.layers.Flatten(name='user_id_vector_2')(user_matrix_2)
     
