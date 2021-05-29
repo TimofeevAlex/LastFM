@@ -32,7 +32,7 @@ def create_inference(model):
         return logits
     return inference
 
-def train_one_epoch(train_step, train_dataset, epoch_loss_avg, epoch_rmse, si=True):
+def train_one_epoch(train_step, train_dataset, epoch_loss_avg, epoch_rmse, threshold, si=True):
     epoch_loss_avg.reset_states()
     epoch_rmse.reset_states()
     for batch in train_dataset:
@@ -48,7 +48,7 @@ def train_one_epoch(train_step, train_dataset, epoch_loss_avg, epoch_rmse, si=Tr
             train_step([user_id, artist_id], y >= threshold, weights)
     return epoch_loss_avg.result().numpy(), epoch_rmse.result().numpy()
 
-def validate_one_epoch(val_step, valid_dataset, val_loss_avg, val_rmse, si=True):
+def validate_one_epoch(val_step, valid_dataset, val_loss_avg, val_rmse, threshold, si=True):
     val_loss_avg.reset_states()
     val_rmse.reset_states()
     for batch in valid_dataset:
@@ -63,7 +63,7 @@ def validate_one_epoch(val_step, valid_dataset, val_loss_avg, val_rmse, si=True)
             val_step([user_id, artist_id], y >= threshold) 
     return val_loss_avg.result().numpy(), val_rmse.result().numpy()
 
-def test_one_epoch(test_step, test_dataset, test_loss_avg, test_rmse, si=True):
+def test_one_epoch(test_step, test_dataset, test_loss_avg, test_rmse, threshold, si=True):
     test_loss_avg.reset_states()
     test_rmse.reset_states()
     probs = np.array([])
