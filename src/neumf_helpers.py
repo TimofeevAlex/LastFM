@@ -81,7 +81,7 @@ def test_one_epoch(test_step, test_dataset, test_loss_avg, test_rmse, threshold,
         probs = np.append(probs, tf.squeeze(probs_batch).numpy())
     return probs, test_loss_avg.result().numpy(), test_rmse.result().numpy()
 
-def plot_metrics(train_loss_results, train_rmse_results, val_loss_results, val_rmse_results, log_frequency, timenow):
+def plot_metrics(train_loss_results, train_rmse_results, val_loss_results, val_rmse_results, epoch, log_frequency, timenow):
     fig, axes = plt.subplots(2, sharex=True, figsize=(12, 8))
     fig.suptitle('Training Metrics')
 
