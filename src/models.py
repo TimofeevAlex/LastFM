@@ -23,10 +23,13 @@ def create_shallow_model(num_factors, num_users, num_artists):
     
     # dot product
     vector_product = tf.keras.layers.dot([user_vector, artist_vector], axes = 1, normalize = False)
+
+    # activation function
+    output = tf.keras.activations.sigmoid(vector_product)
     
     # model
-    model = tf.keras.models.Model(inputs = [user_email, artist_id], outputs = [vector_product], name = 'shallow_model')
-    
+    model = tf.keras.models.Model(inputs = [user_email, artist_id], outputs = [output], name = 'shallow_model')
+
     return model
 
 def create_neumf_model(num_factors, num_artists, num_users, reg=0.01):
