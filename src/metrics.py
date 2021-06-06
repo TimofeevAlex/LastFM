@@ -5,7 +5,7 @@ from tqdm.auto import tqdm
 
 def precision_recall_at_k(test, pred_ratings, k=10):
     '''
-    Compute precision and recall metrics.
+    Compute precision and recall at k metrics.
     
     Parameters:
     - test: test data extracted from lastfm_360_behav.

@@ -33,6 +33,22 @@ def create_shallow_model(num_factors, num_users, num_artists):
     return model
 
 def create_neumf_model(num_factors, num_artists, num_users, reg=0.01):
+    '''
+    Creates the NeuMF model which consists of two branches. 
+    The first embedding of user IDs branch are multiplied 
+    by the first embedding of the artist IDs branch.
+    The second embeddings of all branches are concatenated and
+    passed to the shallow NN which output is concatenated to
+    the result of the multiplication and passed to the final 
+    layer which produces the probability of an interaction.
+    Parameters:
+        - num_factors: int, number of latent factors, basically, defines 
+        the size of embeddings
+        - num_user_features: int, number of user features to be passed
+        - num_artists: int, number of artists which can be passed
+        - num_users: int, number of users which can be passed
+        - reg: float, a coefficient for l2-regularization
+    '''
     # User IDs branch
     user_id = tf.keras.layers.Input(shape=[1], name='user_id')
     user_matrix_1 = tf.keras.layers.Embedding(num_users+1, num_factors, name='user_matrix_1', embeddings_regularizer=l2(reg))(user_id)
@@ -70,6 +86,22 @@ def create_neumf_model(num_factors, num_artists, num_users, reg=0.01):
     return model
 
 def create_neumf_model_si(num_factors, num_user_features, num_artists, num_users, reg=0.01):
+    '''
+    Creates the NeuMF model which consists of three branches. 
+    The first embedding of user branches are concatenated and 
+    multiplied by the first embedding of the artist IDs branch.
+    The second embeddings of all branches are concatenated and
+    passed to the shallow NN which output is concatenated to
+    the result of the multiplication and passed to the final 
+    layer which produces the probability of an interaction.
+    Parameters:
+        - num_factors: int, number of latent factors, basically, defines 
+        the size of embeddings
+        - num_user_features: int, number of user features to be passed
+        - num_artists: int, number of artists which can be passed
+        - num_users: int, number of users which can be passed
+        - reg: float, a coefficient for l2-regularization
+    '''
     # User IDs branch
     user_id = tf.keras.layers.Input(shape=[1], name='user_id')
     user_matrix_1 = tf.keras.layers.Embedding(num_users+1, num_factors // 2, name='user_matrix_1', embeddings_regularizer=l2(reg))(user_id)
@@ -113,6 +145,22 @@ def create_neumf_model_si(num_factors, num_user_features, num_artists, num_users
     return model
 
 def create_neumf_only_si(num_factors, num_user_features, num_artists, num_users, reg=0.01):
+    '''
+    Creates the NeuMF model which consists of two branches. 
+    The first embedding of user features branch are multiplied 
+    by the first embedding of the artist IDs branch.
+    The second embeddings of all branches are concatenated and
+    passed to the shallow NN which output is concatenated to
+    the result of the multiplication and passed to the final 
+    layer which produces the probability of an interaction.
+    Parameters:
+        - num_factors: int, number of latent factors, basically, defines 
+        the size of embeddings
+        - num_user_features: int, number of user features to be passed
+        - num_artists: int, number of artists which can be passed
+        - num_users: int, number of users which can be passed
+        - reg: float, a coefficient for l2-regularization
+    '''
     # User features  branch (concatenation with user's ID?)
     user_feats = tf.keras.layers.Input(shape=[num_user_features], name='user_features')
     features_vector_1 = tf.keras.layers.Dense(num_factors, name='user_features_vector_1', activation='relu', kernel_regularizer=l2(reg))(user_feats)

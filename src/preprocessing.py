@@ -2,17 +2,32 @@ import numpy as np
 import pandas as pd
 
 def to_ratings(user_df):
+    '''
+    Transform play frequencies to ratings for a given user.
+    The example of usage:
+    
+    lastfm_360_behav.groupby('user_email').apply(to_ratings)
+    
+    '''
     user_df = user_df.sort_values('norm_plays', ascending=False) 
     cumsum = user_df['norm_plays'].cumsum() 
     user_df['norm_plays'] = 4 * (1 - cumsum)
     return user_df
 
-def to_weights(user_df):
-    weights = user_df['weight'].value_counts()
-    user_df['weight'] = user_df['weight'].map(weights)
-    return user_df
-
 def build_get_negative_ratings(all_artists, factor=1):
+    '''
+    Build a function that returns a set of unlistened to artists
+    for each user.
+    Parameters:
+        - all_artists: list, the list of all artists in the dataset
+        - factor: int, how many unlistened to artists should be added
+    The example of usage:
+    
+    all_artists = set(ratings['artist_id'].unique())
+    get_negative_ratings = build_get_negative_ratings(all_artists, factor=10)
+    negative_ratings = ratings.groupby('user_email').progress_apply(get_negative_ratings)
+   
+   '''
     def get_negative_ratings(user_df):
         user_interactions = user_df['artist_id']
         num_interactions = user_df['artist_id'].shape[0]
