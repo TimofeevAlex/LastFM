@@ -23,7 +23,7 @@ The following transformations are performed on the data to prepare it for use:
  - user IDs are converted to numbers
  - unrealistic ages are changed to NaN
  - gender, country, and age are one-hot encoded
- - features `year`, `month` and `day` are extracted from sign-up date
+ - features `year`, `month`, `weekday` and `day` are extracted from sign-up date
  - samples with missing `artist_name` are dropped
  - samples with missing `artist_id` are dropped
  - implicit feedback is transformed to explicit (plays to ratings)
@@ -34,7 +34,9 @@ Finally, the data is split into train, validation, and test datasets, with 1% of
 
 ### Training
 
-Each model has a separate notebook for training and evaluating.
+Each model has a separate notebook for training and evaluating. Simply run each notebook to get the results described in the report. 
+Plots
+
 
 
 
