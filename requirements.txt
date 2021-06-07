@@ -1,0 +1,18 @@
+## Python version
+python 3.7.10
+
+## Built in python packages:
+datetime
+os
+sys
+
+## The required libraries for running the training and evaluating are:
+numpy>=1.19.5
+pandas>=1.1.5
+TensorFlow>=2.5.0
+tqdm>=4.41.1
+IPython>=5.5.0
+sklearn>=0.22.2
+
+## For plotting the following library was used:
+matplotlib
