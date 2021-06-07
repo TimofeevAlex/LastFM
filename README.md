@@ -34,9 +34,38 @@ Finally, the data is split into train, validation, and test datasets, with 1% of
 
 ### Training
 
-Each model has a separate notebook for training and evaluating. Simply run each notebook to get the results described in the report. 
-Plots
+The following models and settings are implemented and evaluated:
+- Baseline Model, with and without cold start
+- User-User Neighborhood Model
+- Latent Factor Model, with different proportions of negative samples
+- Neural Matrix Factorization Model, with and without cold start, and with different proportions of negative samples
 
+For training, labels are converted to `0` if there is no interaction between the given user-artist pair, and `1` otherwise. The ratings calculated during preprocessing are used as weights for thr Weighted Binary Cross Entropy when training LFM and NeuMF.
+
+The following notebooks should be run to train and evaluate the models:
+- `Baseline.ipynb`
+- `User_neighborhood2.ipynb`
+- `Deep_latent_FM_main.ipynb`
+- `latent_factor_model.ipynb`
+
+Each notebook corresponds to a model, and prepares data and trains the model in all necessary settings (different number of negative samples, cold start, etc).
+
+### Environment
+
+The project has been developed with python `3.7.10`.
+The required library for running the notebooks are:
+- `numpy`
+- `pandas`
+- `TensorFlow`
+- `tqdm`
+- `datetime`
+- `IPython`
+- `os`
+- `sys`
+- `sklearn`
+- `matplotlib`
+
+All necessary imports are done at the beginning of each notebook.
 
 
 
