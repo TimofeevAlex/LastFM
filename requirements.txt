@@ -16,3 +16,6 @@ sklearn>=0.22.2
 
 ## For plotting the following library was used:
 matplotlib
+
+## For saving/loading user neighborhood predictions
+pickle

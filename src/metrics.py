@@ -2,6 +2,15 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import ndcg_score
 from tqdm.auto import tqdm
+from sklearn.metrics import mean_squared_error
+
+
+def rmse(y_true, y_pred):
+    """
+    Compute root mean squared error metric given a list of true and predicted values. 
+    """
+    return mean_squared_error(y_true, y_pred, squared=False)
+
 
 def precision_recall_at_k(test, pred_ratings, k=10):
     '''

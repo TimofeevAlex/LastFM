@@ -42,8 +42,8 @@ The following models and settings are implemented and evaluated:
 For training, labels are converted to `0` if there is no interaction between the given user-artist pair, and `1` otherwise. The ratings calculated during preprocessing are used as weights for thr Weighted Binary Cross Entropy when training LFM and NeuMF.
 
 The following notebooks should be run to train and evaluate the models:
-- `Baseline.ipynb`
-- `User_neighborhood2.ipynb`
+- `baseline_model.ipynb`
+- `user_neighborhood_model.ipynb`
 - `Deep_latent_FM_main.ipynb`
 - `latent_factor_model.ipynb`
 
