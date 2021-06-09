@@ -1,3 +1,5 @@
+# This file contains baseline and factorization-based models
+# The neighborhood model is implemented in separate file neighborhood_helpers.py
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.regularizers import l2

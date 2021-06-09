@@ -1,3 +1,5 @@
+# Here are given functions to transform number of plays to ratings
+# as well as to negative samples based on the given interactions set
 import numpy as np
 import pandas as pd
 
