@@ -44,7 +44,7 @@ For training, labels are converted to `0` if there is no interaction between the
 The following notebooks should be run to train and evaluate the models:
 - `baseline_model.ipynb`
 - `user_neighborhood_model.ipynb`
-- `Deep_latent_FM_main.ipynb`
+- `neural_matrix_factorization_model.ipynb`
 - `latent_factor_model.ipynb`
 
 Each notebook corresponds to a model, and prepares data and trains the model in all necessary settings (different number of negative samples, cold start, etc).
